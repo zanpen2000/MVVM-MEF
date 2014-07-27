@@ -60,12 +60,12 @@ namespace JobRecord.Models
             return cellstr;
         }
 
-        internal Record Read()
+        internal RecordInformation Read()
         {
             WorkBook = ExcelApp.Workbooks.Open(ExcelFilename);
             WorkSheet = (Worksheet)WorkBook.Worksheets[1];
 
-            Record person = new Record();
+            RecordInformation person = new RecordInformation();
             try
             {
                 person.Id = WorkSheet.Range(cellInfo.IdCell).Value2.ToString();
@@ -83,7 +83,7 @@ namespace JobRecord.Models
             return person;
         }
 
-        internal Record Read(Record record)
+        internal RecordInformation Read(RecordInformation record)
         {
             WorkBook = ExcelApp.Workbooks.Open(ExcelFilename);
             WorkSheet = (Worksheet)WorkBook.Worksheets[1];
@@ -126,7 +126,7 @@ namespace JobRecord.Models
             }
         }
 
-        internal bool SaveAs(Record p, string filename)
+        internal bool SaveAs(RecordInformation p, string filename)
         {
             bool result = false;
             WorkBook = ExcelApp.Workbooks.Open(ExcelFilename);
@@ -153,7 +153,7 @@ namespace JobRecord.Models
             }
         }
 
-        internal void Write(Record p)
+        internal void Write(RecordInformation p)
         {
             WorkBook = ExcelApp.Workbooks.Open(ExcelFilename);
             WorkSheet = (Worksheet)WorkBook.Worksheets[1];

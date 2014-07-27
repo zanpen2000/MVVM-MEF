@@ -15,9 +15,9 @@ namespace JobRecord
         {
             try
             {
-                var record = (Record)value;
+                var record = (RecordInformation)value;
                 string filename = record.ExcelFile.Substring(0, record.ExcelFile.Length - 12);
-                string date = string.Join("", (from n in record.Date.Split('-','/') select n.PadLeft(2,'0')).ToArray());
+                string date = string.Join("", (from n in record.Date.Split('-', '/') select n.PadLeft(2, '0')).ToArray());
                 string result = filename + date + ".xls";
                 record.LastExcelFile = result;
                 return result;
@@ -65,5 +65,5 @@ namespace JobRecord
             return null;
         }
     }
-    
+
 }

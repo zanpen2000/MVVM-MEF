@@ -89,7 +89,7 @@
     <Compile Include="Models\IAppHost.cs" />
     <Compile Include="Models\PasswordBoxHelper.cs" />
     <Compile Include="Models\EMail.cs" />
-    <Compile Include="Models\Record.cs" />
+    <Compile Include="Models\RecordInformation.cs" />
     <Compile Include="Models\ServiceLocator.cs" />
     <Compile Include="Models\WindowManager.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

@@ -14,6 +14,7 @@ namespace JobRecord.ViewModels
     using System.ComponentModel.Composition.Hosting;
     using System.Configuration;
     using System.Reflection;
+    using System.Windows;
     using System.Windows.Data;
 
     public class MainWindowViewModel : IAppHost
@@ -23,8 +24,9 @@ namespace JobRecord.ViewModels
 
         private CompositionContainer _container;
 
-        public Record RecordInfo { get; set; }
+        public RecordInformation RecordInfo { get; set; }
 
+        
 
         public DelegateCommand BrowseCommand { get; set; }
         public DelegateCommand ReadContentCommand { get; set; }
@@ -34,8 +36,8 @@ namespace JobRecord.ViewModels
 
         public MainWindowViewModel()
         {
-            RecordInfo = new Record();
-
+            RecordInfo = new RecordInformation();
+           
             var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
             _container = new CompositionContainer(catalog);
             _container.ComposeParts(this);
@@ -44,16 +46,20 @@ namespace JobRecord.ViewModels
 
             SetCommand();
 
-            //SetNewFileName();
+            SetNewFileName();
 
             //ServiceLocator.AddService<IAppHost>(this);
         }
 
         private void SetNewFileName()
         {
+            MultiBinding mb = new MultiBinding();
+            mb.Bindings.Add(new Binding("ExcelFile") { Source = RecordInfo });
+            mb.Bindings.Add(new Binding("Date") { Source = RecordInfo });
+            mb.Converter = new FileDateConverter();
 
-            var c = new FileNameConverter();
-            RecordInfo.LastExcelFile = (string)c.Convert(RecordInfo, null, null, null);
+            BindingOperations.SetBinding(RecordInfo, RecordInformation.LastExcelFileProperty, mb);
+
         }
 
         private void SetCommand()

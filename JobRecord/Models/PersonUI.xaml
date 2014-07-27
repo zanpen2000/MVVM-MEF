@@ -12,7 +12,7 @@
                 <Setter Property="Background" Value="LightBlue"/>
                 <Setter Property="BorderBrush" Value="DarkBlue"/>
                 <Setter Property="BorderThickness" Value="5"/>
-                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+        
             </Style>
 
         </StackPanel.Resources>
