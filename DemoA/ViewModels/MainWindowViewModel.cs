@@ -1,4 +1,5 @@
-﻿using DemoA.Models;
+﻿using DemoA.Interfaces;
+using DemoA.Models;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Win32;
 using System;
@@ -14,8 +15,11 @@ using System.Windows.Input;
 namespace DemoA.ViewModels
 {
 
-    class MainWindowViewModel
+    class MainWindowViewModel : IAppHost
     {
+        [Import(typeof(IWindowManager))]
+        public IWindowManager win = null;
+
         private CompositionContainer _container;
 
         [Import(typeof(ICalc))]
@@ -33,12 +37,15 @@ namespace DemoA.ViewModels
             var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
             _container = new CompositionContainer(catalog);
             _container.ComposeParts(this);
-            
+
             this.OperateCommand = new DelegateCommand<string>(this.Calc.DoCalc);
 
+            ServiceLocator.AddService<IAppHost>(this);
         }
 
-        
-
+        public void ShowMessage(string msg)
+        {
+            win.ShowMessage(msg);
+        }
     }
 }

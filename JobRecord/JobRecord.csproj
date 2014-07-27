@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{41058883-4019-4BCB-9BD5-21E6A4D3BDC8}</ProjectGuid>
+    <ProjectGuid>{2DC49A10-D341-45BA-8BCB-03A6EEC868CB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DemoA</RootNamespace>
-    <AssemblyName>DemoA</AssemblyName>
+    <RootNamespace>JobRecord</RootNamespace>
+    <AssemblyName>JobRecord</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,17 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism.Composition">
-      <HintPath>..\packages\Prism.Composition.5.0.0\lib\NET45\Microsoft.Practices.Prism.Composition.dll</HintPath>
+    <Reference Include="ExcelApi">
+      <HintPath>..\packages\NetOffice.Excel.1.6.0.0\lib\net45\ExcelApi.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Mvvm">
       <HintPath>..\packages\Prism.Mvvm.1.0.0\lib\net45\Microsoft.Practices.Prism.Mvvm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Mvvm.Desktop">
       <HintPath>..\packages\Prism.Mvvm.1.0.0\lib\net45\Microsoft.Practices.Prism.Mvvm.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
-      <HintPath>..\packages\Prism.PubSubEvents.1.0.0\lib\portable-sl4+wp7+windows8+net40\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.SharedInterfaces">
       <HintPath>..\packages\Prism.Mvvm.1.0.0\lib\net45\Microsoft.Practices.Prism.SharedInterfaces.dll</HintPath>
@@ -53,8 +51,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="NetOffice">
+      <HintPath>..\packages\NetOffice.Core.1.6.0.0\lib\net45\NetOffice.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="OfficeApi">
+      <HintPath>..\packages\NetOffice.Core.1.6.0.0\lib\net45\OfficeApi.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,6 +70,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="VBIDEApi">
+      <HintPath>..\packages\NetOffice.Core.1.6.0.0\lib\net45\VBIDEApi.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -73,18 +84,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Interfaces\IAppHost.cs" />
-    <Compile Include="Models\AddModel.cs" />
-    <Compile Include="Models\CalcModel.cs" />
-    <Compile Include="Models\ICalc.cs" />
-    <Compile Include="Models\IOperation.cs" />
-    <Compile Include="Models\IOperationData.cs" />
-    <Compile Include="Models\MetaNumber.cs" />
-    <Compile Include="Models\Multiply.cs" />
-    <Compile Include="Models\SubtractModel.cs" />
-    <Compile Include="ServiceLocator.cs" />
+    <Compile Include="Models\ExcelUnit.cs" />
+    <Compile Include="Models\FileDateConverter.cs" />
+    <Compile Include="Models\IAppHost.cs" />
+    <Compile Include="Models\PasswordBoxHelper.cs" />
+    <Compile Include="Models\EMail.cs" />
+    <Compile Include="Models\Record.cs" />
+    <Compile Include="Models\ServiceLocator.cs" />
+    <Compile Include="Models\WindowManager.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="WindowManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,8 +105,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Models\PersonUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\PersonUI.xaml.cs">
+      <DependentUpon>PersonUI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -126,10 +141,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -5,6 +5,8 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.ServiceLocation;
+using DemoA.Interfaces;
 
 namespace DemoA.Models
 {
@@ -12,13 +14,6 @@ namespace DemoA.Models
     [ExportMetadata("Method", "Add")]
     public class AddModel :  IOperation
     {
-
-       
-        public AddModel()
-        {
-            
-        }
-
         [Import]
         public MetaNumber Metadata { get; set; }
 
@@ -26,8 +21,9 @@ namespace DemoA.Models
         public void Operate()
         {
             this.Metadata.Result = this.Metadata.Input1 + this.Metadata.Input2;
+            IAppHost host = ServiceLocator.GetService<IAppHost>();
+            host.ShowMessage("calc done!");
         }
-
 
         internal void Save()
         {

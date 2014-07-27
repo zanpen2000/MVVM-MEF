@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Prism.ViewModel;
+﻿using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -8,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace DemoA.Models
 {
-    
-    public class MetaNumber : NotificationObject
+
+    public class MetaNumber : BindableBase
     {
         public MetaNumber()
         {
@@ -24,7 +25,7 @@ namespace DemoA.Models
             set
             {
                 input1 = value;
-                this.RaisePropertyChanged("Input1");
+                this.OnPropertyChanged("Input1");
             }
         }
 
@@ -36,7 +37,7 @@ namespace DemoA.Models
             set
             {
                 input2 = value;
-                this.RaisePropertyChanged("Input2");
+                this.OnPropertyChanged("Input2");
             }
         }
 
@@ -48,7 +49,7 @@ namespace DemoA.Models
             set
             {
                 result = value;
-                this.RaisePropertyChanged("Result");
+                this.OnPropertyChanged("Result");
             }
         }
     }

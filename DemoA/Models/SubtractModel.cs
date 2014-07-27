@@ -17,10 +17,7 @@ namespace DemoA.Models
             this.Metadata.Result = this.Metadata.Input1 - this.Metadata.Input2;
         }
 
-        public SubtractModel()
-        {
-            
-        }
+
         [Import]
         public MetaNumber Metadata
         {
