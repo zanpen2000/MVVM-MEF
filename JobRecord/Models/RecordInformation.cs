@@ -9,157 +9,184 @@ using System.Windows;
 
 namespace JobRecord.Models
 {
-    public class RecordInformation : DependencyObject
+    public class RecordInformation : DependencyObject, INotifyPropertyChanged
     {
 
 
+        private string excelFile;
 
         public string ExcelFile
         {
-            get { return (string)GetValue(ExcelFileProperty); }
-            set { SetValue(ExcelFileProperty, value); }
+            get { return excelFile; }
+            set
+            {
+                excelFile = value;
+                this.OnPropertyChanged("ExcelFile");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for ExcelFile.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ExcelFileProperty =
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
-            DependencyProperty.Register("ExcelFile", typeof(string), typeof(RecordInformation));
 
 
 
         public string LastExcelFile
         {
             get { return (string)GetValue(LastExcelFileProperty); }
-            set { SetValue(LastExcelFileProperty, value); }
+            set
+            {
+                SetValue(LastExcelFileProperty, value);
+                this.OnPropertyChanged("LastExcelFile");
+            }
         }
 
         // Using a DependencyProperty as the backing store for LastExcelFile.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LastExcelFileProperty =
             DependencyProperty.Register("LastExcelFile", typeof(string), typeof(RecordInformation));
 
+     
 
+        private string mailUser;
 
         public string MailUser
         {
-            get { return (string)GetValue(MailUserProperty); }
-            set { SetValue(MailUserProperty, value); }
+            get { return mailUser; }
+            set
+            {
+                mailUser = value;
+                this.OnPropertyChanged("MailUser");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for MailUser.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MailUserProperty =
-            DependencyProperty.Register("MailUser", typeof(string), typeof(RecordInformation));
 
-
-
-
+        private string mailPassword;
 
         public string MailPassword
         {
-            get { return (string)GetValue(MailPasswordProperty); }
-            set { SetValue(MailPasswordProperty, value); }
+            get { return mailPassword; }
+            set
+            {
+                mailPassword = value;
+                this.OnPropertyChanged("MailPassword");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for MailPassword.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MailPasswordProperty =
-            DependencyProperty.Register("MailPassword", typeof(string), typeof(RecordInformation));
 
-
+        private string mailTo;
 
         public string MailTo
         {
-            get { return (string)GetValue(MailToProperty); }
-            set { SetValue(MailToProperty, value); }
+            get { return mailTo; }
+            set
+            {
+                mailTo = value;
+                this.OnPropertyChanged("MailTo");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for MailTo.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MailToProperty =
-            DependencyProperty.Register("MailTo", typeof(string), typeof(RecordInformation));
 
 
-
+        private string contentCell;
 
         public string ContentCell
         {
-            get { return (string)GetValue(ContentCellProperty); }
-            set { SetValue(ContentCellProperty, value); }
+            get { return contentCell; }
+            set
+            {
+                contentCell = value;
+                this.OnPropertyChanged("ContentCell");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for ContentCell.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ContentCellProperty =
-            DependencyProperty.Register("ContentCell", typeof(string), typeof(RecordInformation));
+
+        private string personName;
 
         public string PersonName
         {
-            get { return (string)GetValue(PersonNameProperty); }
-            set { SetValue(PersonNameProperty, value); }
+            get { return personName; }
+            set
+            {
+                personName = value;
+                this.OnPropertyChanged("PersonName");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for PersonName.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PersonNameProperty =
-            DependencyProperty.Register("PersonName", typeof(string), typeof(RecordInformation));
 
 
+        private string id;
 
         public string Id
         {
-            get { return (string)GetValue(IdProperty); }
-            set { SetValue(IdProperty, value); }
+            get { return id; }
+            set
+            {
+                id = value;
+                this.OnPropertyChanged("Id");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for Id.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IdProperty =
-            DependencyProperty.Register("Id", typeof(string), typeof(RecordInformation));
 
-
-
+        private string date;
 
         public string Date
         {
-            get { return (string)GetValue(DateProperty); }
-            set { SetValue(DateProperty, value); }
+            get { return date; }
+            set
+            {
+                date = value;
+                this.OnPropertyChanged("Date");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for Date.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DateProperty =
-            DependencyProperty.Register("Date", typeof(string), typeof(RecordInformation));
 
 
+
+        private string department;
 
         public string Department
         {
-            get { return (string)GetValue(DepartmentProperty); }
-            set { SetValue(DepartmentProperty, value); }
+            get { return department; }
+            set
+            {
+                department = value;
+                this.OnPropertyChanged("Department");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for Department.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DepartmentProperty =
-            DependencyProperty.Register("Department", typeof(string), typeof(RecordInformation));
 
 
+
+        private string company;
 
         public string Company
         {
-            get { return (string)GetValue(CompanyProperty); }
-            set { SetValue(CompanyProperty, value); }
+            get { return company; }
+            set
+            {
+                company = value;
+                this.OnPropertyChanged("Company");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for Company.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CompanyProperty =
-            DependencyProperty.Register("Company", typeof(string), typeof(RecordInformation));
 
-
+        private string diaryContent;
 
         public string DiaryContent
         {
-            get { return (string)GetValue(DiaryContentProperty); }
-            set { SetValue(DiaryContentProperty, value); }
+            get { return diaryContent; }
+            set
+            {
+                diaryContent = value;
+                this.OnPropertyChanged("DiaryContent");
+            }
         }
 
-        // Using a DependencyProperty as the backing store for DiaryContent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DiaryContentProperty =
-            DependencyProperty.Register("DiaryContent", typeof(string), typeof(RecordInformation));
-
-
-
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

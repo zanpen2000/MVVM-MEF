@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using Microsoft.Win32;
 using System.ComponentModel.Composition;
+using Xceed.Wpf.Toolkit;
 
 namespace JobRecord.Models
 {
@@ -15,7 +16,7 @@ namespace JobRecord.Models
 
         void ShowMessage(string msg);
 
-
+        void ShowBusyForm(Action ac, string msg);
 
         Size Size { set; get; }
 
@@ -91,9 +92,23 @@ namespace JobRecord.Models
 
         public void ShowMessage(string msg)
         {
-            MessageBox.Show(msg);
+            System.Windows.MessageBox.Show(msg);
         }
 
+
+        public void ShowBusyForm(Action ac, string msg)
+        {
+            BusyIndicator b = new BusyIndicator();
+            b.IsBusy = true;
+            b.BusyContent = msg;
+            
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.RunWorkerCompleted += (x,y) => { b.IsBusy = false; };
+            bw.DoWork += (x, y) => {  ac(); };
+
+
+            bw.RunWorkerAsync();
+        }
 
 
  

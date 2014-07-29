@@ -78,6 +78,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\workdiary2\workdiary2\packages\Extended.Wpf.Toolkit.Plus.2.2.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -87,7 +90,7 @@
     <Compile Include="Models\ExcelUnit.cs" />
     <Compile Include="Models\FileDateConverter.cs" />
     <Compile Include="Models\IAppHost.cs" />
-    <Compile Include="Models\PasswordBoxHelper.cs" />
+    <Compile Include="Models\PasswordBoxBindingHelper.cs" />
     <Compile Include="Models\EMail.cs" />
     <Compile Include="Models\RecordInformation.cs" />
     <Compile Include="Models\ServiceLocator.cs" />

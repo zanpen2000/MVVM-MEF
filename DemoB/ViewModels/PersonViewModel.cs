@@ -18,6 +18,7 @@ namespace DemoB.ViewModels
         {
             this.PersonModel = new Person();
             this.PersonCommand = new DelegateCommand();
+            this.PersonCommand.CanExecuteFunc = this.PersonModel.CanExecuteFunction;
             this.PersonCommand.ExecuteAction = this.PersonModel.Show;
         }
     }

@@ -19,12 +19,18 @@ namespace DemoB.Models
             {
                 name = value;
                 this.RaisePropertyChanged("Name");
+                CanExecuteFunction(null);
             }
         }
 
         public void Show(object parameter)
         {
             this.Name += "，你妈妈喊你回家吃饭了！";
+        }
+
+        internal bool CanExecuteFunction(object arg)
+        {
+            return !string.IsNullOrEmpty(Name);
         }
     }
 }
