@@ -4,25 +4,15 @@ namespace JobRecord.ViewModels
 {
     using JobRecord.Models;
     using Microsoft.Practices.Prism.Commands;
-    using Microsoft.Practices.Prism.Mvvm;
     using Microsoft.Win32;
-    using System.ComponentModel.Composition;
-    using System.ComponentModel.Composition.Hosting;
     using System.Configuration;
-    using System.Reflection;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Data;
 
-    public class MainWindowViewModel : DependencyObject, IAppHost
+    public class MainWindowViewModel : ViewModelBase
     {
-        [Import(typeof(IWindowManager))]
-        public IWindowManager iwm = null;
-
-        private CompositionContainer _container;
-
-
-
+        #region Propertys
         public RecordInformation RecordInfo
         {
             get { return (RecordInformation)GetValue(RecordInfoProperty); }
@@ -31,32 +21,25 @@ namespace JobRecord.ViewModels
 
         // Using a DependencyProperty as the backing store for RecordInfo.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecordInfoProperty =
-            DependencyProperty.Register("RecordInfo", typeof(RecordInformation), typeof(MainWindowViewModel));
+            DependencyProperty.Register("RecordInfo", typeof(RecordInformation), typeof(MainWindowViewModel)); 
+        #endregion
 
-
-
-
+        #region Commands
         public DelegateCommand BrowseCommand { get; set; }
         public DelegateCommand ReadContentCommand { get; set; }
         public DelegateCommand SaveAsCommand { get; set; }
-
         public DelegateCommand MailSendCommand { get; set; }
+
+        #endregion
 
         public MainWindowViewModel()
         {
+
             RecordInfo = new RecordInformation();
 
-            var catalog = new AssemblyCatalog(Assembly.GetExecutingAssembly());
-            _container = new CompositionContainer(catalog);
-            _container.ComposeParts(this);
-
-            LoadConfig();
-
             SetCommand();
-
+            LoadConfig();
             SetNewFileName();
-
-
         }
 
         private void SetNewFileName()
@@ -71,12 +54,13 @@ namespace JobRecord.ViewModels
 
         private void SetCommand()
         {
+            this.RecordInfo.PropertyChanged += RecordInfo_PropertyChanged;
+
             this.BrowseCommand = new DelegateCommand(BrowserExcelFile);
             this.ReadContentCommand = new DelegateCommand(ReadContent, CanReadContent);
             this.SaveAsCommand = new DelegateCommand(SaveExcelAs, CanSaveExcelAs);
             this.MailSendCommand = new DelegateCommand(MailSend, CanMailSend);
 
-            this.RecordInfo.PropertyChanged += RecordInfo_PropertyChanged;
         }
 
         void RecordInfo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -84,6 +68,7 @@ namespace JobRecord.ViewModels
             switch (e.PropertyName)
             {
                 case "ExcelFile":
+                    this.LoadExcel(this.RecordInfo.ExcelFile);
                     this.SaveAsCommand.RaiseCanExecuteChanged();
                     break;
                 case "Date":
@@ -110,44 +95,58 @@ namespace JobRecord.ViewModels
 
         }
 
-        private void LoadConfig()
-        {
-            RecordInfo.MailUser = ConfigurationManager.AppSettings.Get("mailuser");
-            RecordInfo.MailTo = ConfigurationManager.AppSettings.Get("mailto");
-            RecordInfo.ExcelFile = ConfigurationManager.AppSettings.Get("lastfilename");
-            RecordInfo.ContentCell = ConfigurationManager.AppSettings.Get("contentcell");
-        }
 
         private void MailSend()
         {
-            using (ExcelUnit excel = new ExcelUnit(RecordInfo.ExcelFile))
+            SaveExcelAs();
+
+            string filename = RecordInfo.ExcelFile;
+
+            Task.Factory.StartNew(() =>
             {
-                if (excel.SaveAs(RecordInfo, RecordInfo.LastExcelFile))
+                IsBusy = true;
+                BusyContent = "正在发送日志...";
+                using (ExcelUnit excel = new ExcelUnit(filename))
                 {
-                    Email email = new Email();
-                    email.host = "smtp.qq.com";
-                    email.port = 587;
-                    email.mailFrom = RecordInfo.MailUser;
-                    email.mailPwd = RecordInfo.MailPassword;
-                    email.mailSubject = System.IO.Path.GetFileNameWithoutExtension(RecordInfo.LastExcelFile) + " " + RecordInfo.PersonName;
-                    email.mailToArray = RecordInfo.MailTo.Split(';');
-
-                    email.attachmentsPath = new string[] { RecordInfo.LastExcelFile };
-
-                    email.SendAsync(new System.Net.Mail.SendCompletedEventHandler((obj, ee) =>
+                    this.Dispatcher.InvokeAsync(() =>
                     {
-                        if (ee.Error != null)
+                        if (excel.SaveAs(RecordInfo, RecordInfo.LastExcelFile))
                         {
-                            iwm.ShowMessage("发送失败:\r\n" + ee.Error.Message);
-                        }
-                        else
-                        {
-                            iwm.ShowMessage("发送成功");
-                        }
+                            Email email = new Email();
+                            email.host = "smtp.qq.com";
+                            email.port = 587;
+                            email.mailFrom = RecordInfo.MailUser;
+                            email.mailPwd = RecordInfo.MailPassword;
+                            email.mailSubject = System.IO.Path.GetFileNameWithoutExtension(RecordInfo.LastExcelFile) + " " + RecordInfo.PersonName;
+                            email.mailToArray = RecordInfo.MailTo.Split(';');
 
-                    }));
+                            email.attachmentsPath = new string[] { RecordInfo.LastExcelFile };
+
+                            email.SendAsync(new System.Net.Mail.SendCompletedEventHandler((obj, ee) =>
+                            {
+                                if (ee.Error != null)
+                                {
+                                    BusyContent = "发送失败:\r\n" + ee.Error.Message;
+                                }
+                                else
+                                {
+                                    BusyContent = "发送成功";
+                                }
+
+                            }));
+                        }
+                    }
+
+                        ).Completed += (o1, o2) =>
+                        {
+                            IsBusy = false;
+                            iwm.ShowMessage(BusyContent);
+                        };
                 }
-            }
+
+            });
+
+
         }
 
         private bool CanMailSend()
@@ -155,26 +154,34 @@ namespace JobRecord.ViewModels
             return !string.IsNullOrEmpty(RecordInfo.MailTo) &&
                 !string.IsNullOrEmpty(RecordInfo.MailUser) &&
                 !string.IsNullOrEmpty(RecordInfo.MailPassword) ? true : false;
-
-
-        }
-
-        private void Save()
-        {
-            using (ExcelUnit excel = new ExcelUnit(RecordInfo.ExcelFile))
-            {
-                string msg = excel.SaveAs(RecordInfo, RecordInfo.LastExcelFile) ? "保存成功" : "保存失败";
-                iwm.ShowMessage(msg);
-            }
         }
 
         private void SaveExcelAs()
         {
-            this.Dispatcher.Invoke(() =>
+            SaveConfig();
+            string filename = RecordInfo.ExcelFile;
+
+            Task.Factory.StartNew(() =>
             {
-                iwm.ShowBusyForm(SaveConfig, "正在保存配置文件，请稍候...");
-                iwm.ShowBusyForm(Save, "正在保存文档，请稍候...");
+                IsBusy = true;
+                BusyContent = "正在保存文档...";
+                using (ExcelUnit excel = new ExcelUnit(filename))
+                {
+                    string msg = "";
+                    this.Dispatcher.InvokeAsync(() =>
+                    {
+                        msg = excel.SaveAs(RecordInfo, RecordInfo.LastExcelFile) ? "保存成功" : "保存失败";
+
+                    }).Completed += (o1, o2) =>
+                    {
+                        BusyContent = msg;
+                        IsBusy = false;
+
+                    };
+                }
             });
+
+
         }
 
         private bool CanSaveExcelAs()
@@ -192,15 +199,28 @@ namespace JobRecord.ViewModels
 
         private bool CanReadContent()
         {
-            return string.IsNullOrEmpty(RecordInfo.ContentCell) ? false : true;
+            return string.IsNullOrEmpty(RecordInfo.ContentCell) || 
+                string.IsNullOrEmpty(RecordInfo.ExcelFile) ? false : true;
         }
 
         private void ReadContent()
         {
-            using (ExcelUnit excel = new ExcelUnit(RecordInfo.ExcelFile))
+            string filename = RecordInfo.ExcelFile;
+            Task.Factory.StartNew(() =>
             {
-                RecordInfo.DiaryContent = excel.ReadCell(RecordInfo.ContentCell);
-            }
+                IsBusy = true;
+                BusyContent = "正在加载文档...";
+                using (ExcelUnit excel = new ExcelUnit(filename))
+                {
+                    this.Dispatcher.InvokeAsync(() =>
+                    {
+                        RecordInfo.DiaryContent = excel.ReadCell(RecordInfo.ContentCell);
+                    }).Completed += (o1, o2) =>
+                    {
+                        IsBusy = false;
+                    };
+                }
+            });
         }
 
         private void BrowserExcelFile()
@@ -208,51 +228,48 @@ namespace JobRecord.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "选择日志模板文件";
             openFileDialog.Filter = "文件（.xls）|*.xls";//文件扩展名
-
             RecordInfo.ExcelFile = this.OpenFileDialog(openFileDialog);
-            if (!string.IsNullOrEmpty(RecordInfo.ExcelFile))
-                LoadExcel(RecordInfo.ExcelFile);
         }
 
         private void LoadExcel(string excelFilename)
         {
-            Action ac = () =>
+            if (!System.IO.File.Exists(excelFilename)) return;
+
+            Task.Factory.StartNew(() =>
             {
-                if (!System.IO.File.Exists(excelFilename)) return;
+                IsBusy = true;
+                BusyContent = "正在加载文档...";
                 using (ExcelUnit excel = new ExcelUnit(excelFilename))
                 {
-                    RecordInfo = excel.Read(RecordInfo);
-                    RecordInfo.Date = System.DateTime.Now.ToShortDateString();
-                    //SetNewFileName();
+                    this.Dispatcher.InvokeAsync(() =>
+                    {
+                        RecordInfo = excel.Read(RecordInfo);
+                        RecordInfo.Date = System.DateTime.Now.ToShortDateString();
+                    }).Completed += (o1, o2) =>
+                    {
+                        IsBusy = false;
+                    };
                 }
-            };
-            this.Dispatcher.Invoke(() =>
-            {
-                iwm.ShowBusyForm(ac, "正在读取...");
             });
 
         }
 
-
+        private void LoadConfig()
+        {
+            RecordInfo.MailUser = ConfigurationManager.AppSettings.Get("mailuser");
+            RecordInfo.MailTo = ConfigurationManager.AppSettings.Get("mailto");
+            RecordInfo.ExcelFile = ConfigurationManager.AppSettings.Get("lastfilename");
+            RecordInfo.ContentCell = ConfigurationManager.AppSettings.Get("contentcell");
+        }
 
         private void SaveConfig()
         {
-            ConfigurationManager.AppSettings["lastfilename"] = RecordInfo.LastExcelFile;
-            ConfigurationManager.AppSettings.Set("mailuser", RecordInfo.MailUser);
-            ConfigurationManager.AppSettings.Set("mailto", RecordInfo.MailTo);
-            ConfigurationManager.AppSettings.Set("contentcell", RecordInfo.ContentCell);
+            var conf = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            conf.AppSettings.Settings["lastfilename"].Value = RecordInfo.LastExcelFile;
+            conf.AppSettings.Settings["mailuser"].Value = RecordInfo.MailUser;
+            conf.AppSettings.Settings["mailto"].Value = RecordInfo.MailTo;
+            conf.AppSettings.Settings["contentcell"].Value = RecordInfo.ContentCell;
+            conf.Save();
         }
-
-        public void ShowMessage(string msg)
-        {
-            iwm.ShowMessage(msg);
-        }
-
-        public string OpenFileDialog(OpenFileDialog dlg)
-        {
-            return iwm.OpenFileDialog(dlg);
-        }
-
-
     }
 }

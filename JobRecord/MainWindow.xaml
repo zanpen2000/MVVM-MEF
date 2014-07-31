@@ -3,78 +3,85 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:JobRecord"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="MainWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid x:Name="mainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="170"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="80"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="5"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="5"/>
-        </Grid.ColumnDefinitions>
-        <TextBlock Text="参考模板:" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    <xctk:BusyIndicator IsBusy="{Binding IsBusy, UpdateSourceTrigger=PropertyChanged}" BusyContent="{Binding BusyContent, UpdateSourceTrigger=PropertyChanged}">
+        <Grid x:Name="mainGrid">
 
-        <TextBox Text="{Binding RecordInfo.ExcelFile}" FontWeight="Light" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center"/>
-        <Button Content="浏览" Grid.Row="1" Grid.Column="5" VerticalAlignment="Center" Command="{Binding BrowseCommand}"/>
-        <local:PersonUI DataContext="{Binding Path=RecordInfo,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="170"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="5"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="5"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="参考模板:" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+            <TextBox Text="{Binding RecordInfo.ExcelFile, UpdateSourceTrigger=PropertyChanged}" FontWeight="Light" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" />
+            <Button Content="浏览" Grid.Row="1" Grid.Column="5" VerticalAlignment="Center" Command="{Binding BrowseCommand}" />
+            <local:PersonUI DataContext="{Binding Path=RecordInfo,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" 
                         Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" />
-        <TextBlock Text="另存为：" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock Text="另存为：" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-        <TextBox Text="{Binding RecordInfo.LastExcelFile, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="7" Grid.Column="3"/>
+            <TextBox Text="{Binding RecordInfo.LastExcelFile, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Grid.Row="7" Grid.Column="3"/>
+            <Button Content="保存" Command="{Binding SaveAsCommand}"  Grid.Row="7" Grid.Column="5"/>
 
 
-        <Button Content="保存" Grid.Row="7" Grid.Column="5" Command="{Binding SaveAsCommand}"/>
 
-        <GroupBox Header="邮件设置" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" >
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="80*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="80*"/>
-                    <ColumnDefinition Width="5"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="用户名："  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <TextBlock Text="密码：" Grid.Row="0" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <TextBlock Text="收件人："  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-                <TextBox  Text="{Binding RecordInfo.MailUser,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
+            <GroupBox Header="邮件设置" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="3" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="80*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="80*"/>
+                        <ColumnDefinition Width="5"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="用户名："  Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="密码：" Grid.Row="0" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <TextBlock Text="收件人："  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-                <PasswordBox local:PasswordBoxBindingHelper.IsPasswordBindingEnabled="True" 
+                    <TextBox  Text="{Binding RecordInfo.MailUser,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="3" VerticalAlignment="Center"/>
+
+                    <PasswordBox local:PasswordBoxBindingHelper.IsPasswordBindingEnabled="True" 
                              local:PasswordBoxBindingHelper.BindedPassword="{Binding RecordInfo.MailPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Grid.Row="0" Grid.Column="7" />
 
-                <TextBox Text="{Binding RecordInfo.MailTo, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="5" VerticalAlignment="Center"/>
-            </Grid>
-        </GroupBox>
-        <TextBox Text="{Binding RecordInfo.DiaryContent}"  Grid.Row="5" Grid.Column="3" Grid.RowSpan="2" TextWrapping="Wrap" AcceptsReturn="True"/>
-        <Button  Content="发送" Grid.Row="8" Grid.Column="5" Command="{Binding MailSendCommand}"/>
-        <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Horizontal" VerticalAlignment="Top">
-            <TextBox  Height="25" Width="50" Margin="2" Text="{Binding RecordInfo.ContentCell, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button  Content="->" Height="25" Command="{Binding ReadContentCommand}"/>
-        </StackPanel>
+                    <TextBox Text="{Binding RecordInfo.MailTo, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="5" VerticalAlignment="Center"/>
+                </Grid>
+            </GroupBox>
+            <TextBox Text="{Binding RecordInfo.DiaryContent}"  Grid.Row="5" Grid.Column="3" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <Button  Content="发送" Grid.Row="8" Grid.Column="5" Command="{Binding MailSendCommand}"/>
+            <StackPanel Grid.Column="1" Grid.Row="5" Orientation="Vertical" HorizontalAlignment="Stretch" >
+                <TextBlock Text="位置："/>
+                <TextBox  Text="{Binding RecordInfo.ContentCell, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button  Content="读取" Command="{Binding ReadContentCommand}" />
+            </StackPanel>
 
-    </Grid>
+        </Grid>
+    </xctk:BusyIndicator>
 </Window>
