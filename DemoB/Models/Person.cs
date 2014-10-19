@@ -19,7 +19,7 @@ namespace DemoB.Models
             {
                 name = value;
                 this.RaisePropertyChanged("Name");
-                CanExecuteFunction(null);
+                CanExecuteFunction(name);
             }
         }
 
@@ -30,7 +30,7 @@ namespace DemoB.Models
 
         internal bool CanExecuteFunction(object arg)
         {
-            return !string.IsNullOrEmpty(Name);
+            return !string.IsNullOrEmpty(arg.ToString());
         }
     }
 }
